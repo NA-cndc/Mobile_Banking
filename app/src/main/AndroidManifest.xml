@@ -28,6 +28,8 @@
             android:name=".ui.MainActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.account.TransactionHistoryActivity" />
+
     </application>
 
 </manifest>
