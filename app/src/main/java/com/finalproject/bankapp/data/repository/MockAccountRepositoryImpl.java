@@ -34,7 +34,15 @@ public class MockAccountRepositoryImpl implements IAccountRepository {
 
     @Override
     public void getAccounts(String userId, DataCallback<List<Account>> callback) {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> callback.onSuccess(mockAccounts), 500);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            List<Account> userAccounts = new ArrayList<>();
+            for (Account acc : mockAccounts) {
+                if (acc.getUserId().equals(userId)) {
+                    userAccounts.add(acc);
+                }
+            }
+            callback.onSuccess(userAccounts);
+        }, 400);
     }
 
     @Override
@@ -88,5 +96,40 @@ public class MockAccountRepositoryImpl implements IAccountRepository {
         String time = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date());
         String txId = "TX" + System.currentTimeMillis();
         mockTransactions.add(0, new Transaction(txId, accountId, type, amount, time, desc));
+    }
+    @Override
+    public void createAccount(Account newAccount, DataCallback<Boolean> callback) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            mockAccounts.add(newAccount);
+            addMockTransaction(newAccount.getAccountId(), "DEPOSIT", newAccount.getBalance(), "Khởi tạo tài khoản bởi nhân viên");
+            callback.onSuccess(true);
+        }, 400);
+    }
+
+    @Override
+    public void getAllSavingAccounts(DataCallback<List<Account>> callback) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            List<Account> savings = new ArrayList<>();
+            for (Account acc : mockAccounts) {
+                if ("SAVING".equals(acc.getAccountType())) {
+                    savings.add(acc);
+                }
+            }
+            callback.onSuccess(savings);
+        }, 300);
+    }
+
+    @Override
+    public void updateSavingInterestRate(String accountId, double newRate, DataCallback<Boolean> callback) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            for (Account acc : mockAccounts) {
+                if (acc.getAccountId().equals(accountId) && "SAVING".equals(acc.getAccountType())) {
+                    acc.setInterestRate(newRate);
+                    callback.onSuccess(true);
+                    return;
+                }
+            }
+            callback.onError("Không tìm thấy tài khoản tiết kiệm");
+        }, 400);
     }
 }

@@ -10,4 +10,9 @@ public interface IAccountRepository {
     void deposit(String accountId, double amount, DataCallback<Boolean> callback);
     void withdraw(String accountId, double amount, DataCallback<Boolean> callback);
     void getTransactionHistory(String accountId, DataCallback<List<Transaction>> callback);
+
+    // Bổ sung cho Yêu cầu 1 & Yêu cầu 3 (Quyền của Bank Officer)
+    void createAccount(Account newAccount, DataCallback<Boolean> callback);
+    void getAllSavingAccounts(DataCallback<List<Account>> callback);
+    void updateSavingInterestRate(String accountId, double newRate, DataCallback<Boolean> callback);
 }

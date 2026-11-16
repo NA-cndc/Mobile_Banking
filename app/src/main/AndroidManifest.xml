@@ -29,7 +29,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.account.TransactionHistoryActivity" />
-
+        <activity android:name=".ui.profile.OfficerCustomerManagerActivity" />
     </application>
 
 </manifest>

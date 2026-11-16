@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Thẻ thông tin cá nhân (Dùng chung cho Customer & Officer) -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvProfileRoleBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#E3F2FD"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="KHÁCH HÀNG (CUSTOMER)"
+                    android:textColor="#1565C0"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvProfileUserId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Mã định danh: UID_001"
+                    android:textColor="#757575" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Họ và tên"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Email"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtProfileEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Số điện thoại"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtProfilePhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone" />
+
+                <Button
+                    android:id="@+id/btnSaveProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Cập nhật thông tin cá nhân" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Khu vực đặc quyền chỉ hiện khi đăng nhập bằng tài khoản Bank Officer -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardOfficerPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFF8E1"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NGHIỆP VỤ NHÂN VIÊN NGÂN HÀNG"
+                    android:textColor="#E65100"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Quản lý hồ sơ khách hàng, mở tài khoản và điều chỉnh chính sách lãi suất."
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnOfficerManageCustomers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Quản lý Khách hàng &amp; Mở tài khoản" />
+
+                <Button
+                    android:id="@+id/btnOfficerEditRates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Điều chỉnh lãi suất Tiết kiệm" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Nút Đăng xuất để chuyển đổi nhanh giữa Customer và Officer khi test -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#D32F2F"
+            android:text="Đăng xuất"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+</ScrollView>
