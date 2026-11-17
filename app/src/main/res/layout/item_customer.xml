@@ -40,6 +40,14 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btnEkycCustomer"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng ký eKYC"
+                android:textColor="#2E7D32" />
+
+            <Button
                 android:id="@+id/btnEditCustomer"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
@@ -51,7 +59,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+ Mở tài khoản" />
+                android:text="+ Mở TK" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

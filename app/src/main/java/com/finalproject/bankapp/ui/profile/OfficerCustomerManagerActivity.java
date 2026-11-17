@@ -1,5 +1,15 @@
 package com.finalproject.bankapp.ui.profile;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.util.Base64;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+import java.io.ByteArrayOutputStream;
+
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -36,6 +46,56 @@ public class OfficerCustomerManagerActivity extends BaseActivity {
 
     private IUserRepository userRepository;
     private IAccountRepository accountRepository;
+    private User selectedCustomerForEkyc;
+
+    // 1. Bộ nhận kết quả chụp ảnh từ Camera
+    private final ActivityResultLauncher<Void> cameraLauncher =
+            registerForActivityResult(new ActivityResultContracts.TakePicturePreview(), bitmap -> {
+                if (bitmap != null && selectedCustomerForEkyc != null) {
+                    saveEkycBitmapToCustomer(bitmap);
+                } else {
+                    showToast("Đã hủy chụp ảnh hoặc không lấy được ảnh từ Camera");
+                }
+            });
+
+    // 2. Bộ xin quyền Camera lúc chạy (Khắc phục lỗi sập app)
+    private final ActivityResultLauncher<String> requestCameraPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    openCameraSafely();
+                } else {
+                    showToast("Bạn cần cấp quyền Camera để chụp ảnh khuôn mặt eKYC!");
+                }
+            });
+
+    private void openCameraSafely() {
+        try {
+            cameraLauncher.launch(null);
+        } catch (Exception e) {
+            showToast("Máy ảo chưa bật Camera, hãy dùng nút 'Ảnh mẫu (Máy ảo)'");
+        }
+    }
+
+    private void saveEkycBitmapToCustomer(Bitmap bitmap) {
+        if (selectedCustomerForEkyc == null) return;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+        String base64Image = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+
+        selectedCustomerForEkyc.setBiometricDataUrl(base64Image);
+        userRepository.updateUserProfile(selectedCustomerForEkyc, new DataCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+                showToast("Đã lưu dữ liệu khuôn mặt eKYC cho " + selectedCustomerForEkyc.getFullName());
+                loadCustomers();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                showToast(errorMessage);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +126,31 @@ public class OfficerCustomerManagerActivity extends BaseActivity {
             @Override
             public void onCreateAccount(User customer) {
                 showCreateAccountDialog(customer);
+            }
+
+            @Override
+            public void onRegisterEkyc(User customer) {
+                selectedCustomerForEkyc = customer;
+                new AlertDialog.Builder(OfficerCustomerManagerActivity.this)
+                        .setTitle("Đăng ký eKYC cho " + customer.getFullName())
+                        .setMessage("Chọn phương thức thu thập ảnh nhận diện khuôn mặt của khách hàng:")
+                        .setPositiveButton("Mở Camera", (d, w) -> {
+                            if (ContextCompat.checkSelfPermission(OfficerCustomerManagerActivity.this, Manifest.permission.CAMERA)
+                                    == PackageManager.PERMISSION_GRANTED) {
+                                openCameraSafely();
+                            } else {
+                                requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+                            }
+                        })
+                        .setNeutralButton("Ảnh mẫu (Máy ảo)", (d, w) -> {
+                            // Tạo ảnh mẫu 120x120 phòng trường hợp máy ảo không có Webcam
+                            Bitmap sampleFace = Bitmap.createBitmap(120, 120, Bitmap.Config.ARGB_8888);
+                            Canvas canvas = new Canvas(sampleFace);
+                            canvas.drawColor(Color.parseColor("#1976D2"));
+                            saveEkycBitmapToCustomer(sampleFace);
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
             }
         });
         rvCustomers.setAdapter(adapter);

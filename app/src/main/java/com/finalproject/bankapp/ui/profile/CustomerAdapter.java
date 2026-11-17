@@ -19,6 +19,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
     public interface OnCustomerActionListener {
         void onEditCustomer(User customer);
         void onCreateAccount(User customer);
+        void onRegisterEkyc(User customer);
     }
 
     public CustomerAdapter(List<User> customerList, OnCustomerActionListener listener) {
@@ -36,9 +37,13 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
     @Override
     public void onBindViewHolder(@NonNull CustomerViewHolder holder, int position) {
         User customer = customerList.get(position);
-        holder.tvName.setText(customer.getFullName() + " (" + customer.getUserId() + ")");
+        boolean hasEkyc = customer.getBiometricDataUrl() != null && !customer.getBiometricDataUrl().isEmpty();
+        String ekycTag = hasEkyc ? " [Đã eKYC]" : " [Chưa eKYC]";
+
+        holder.tvName.setText(customer.getFullName() + " (" + customer.getUserId() + ")" + ekycTag);
         holder.tvContact.setText("Email: " + customer.getEmail() + " | SĐT: " + customer.getPhoneNumber());
 
+        holder.btnEkyc.setOnClickListener(v -> listener.onRegisterEkyc(customer));
         holder.btnEdit.setOnClickListener(v -> listener.onEditCustomer(customer));
         holder.btnCreateAccount.setOnClickListener(v -> listener.onCreateAccount(customer));
     }
@@ -50,12 +55,13 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
 
     static class CustomerViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvContact;
-        Button btnEdit, btnCreateAccount;
+        Button btnEkyc, btnEdit, btnCreateAccount;
 
         public CustomerViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvCustomerName);
             tvContact = itemView.findViewById(R.id.tvCustomerContact);
+            btnEkyc = itemView.findViewById(R.id.btnEkycCustomer);
             btnEdit = itemView.findViewById(R.id.btnEditCustomer);
             btnCreateAccount = itemView.findViewById(R.id.btnCreateAccountForCustomer);
         }

@@ -148,7 +148,13 @@ public class HomeFragment extends Fragment {
                 return;
             }
 
-            executeTransaction(account.getAccountId(), amount, isDeposit);
+            if (getActivity() != null) {
+                com.finalproject.bankapp.utils.TransactionSecurityHelper.verifyTransaction(
+                        requireActivity(),
+                        amount,
+                        () -> executeTransaction(account.getAccountId(), amount, isDeposit)
+                );
+            }
         });
 
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
